@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Component } from '@angular/core';
 
 
@@ -13,7 +13,7 @@ export class AppComponent {
   public password = ''
   private token = ''
   public invalid = ''
-
+  
   
 gernerateToken(){
   var time = new Date();
@@ -28,22 +28,24 @@ constructor(
 ){}
 
 async validate () {
- var code =  await this.httpClient.get<string>("/api/validate").toPromise()
+  var code = ""
+  code =  await this.httpClient.get<string>("/api/validate").toPromise()
  if(code == this.token){
-   document.location.href = 'http://onecause.com'
+  document.location.href = 'http://onecause.com'
  }
  else {
-   this.invalid = "wrong username or password"
+   window.location.reload()
+   this.invalid = "Invalid email or password pease try again."
  }
 }
 
-   submit(){
+  async submit(){
   this.token = this.gernerateToken()
-  this.httpClient.post("/api/validate", {
+  await this.httpClient.post<JSON>("/api/validate",{
     email: this.email,
     password: this.password,
     token: this.token
-  })
+  }).subscribe()
   this.validate()
 }
 
